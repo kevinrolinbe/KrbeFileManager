@@ -1,0 +1,14 @@
+<ul class="directory-tree">
+    <li>
+        <a href="#"
+           class="folder-link"
+           data-krbe-filemanager-folder="">
+            Root
+        </a>
+        <ul id="filemanager-tree">
+            {% for node in directoryTree %}
+                {{ include('@KrbeFileManager/partials/list_folders_node.html.twig', { node: node }) }}
+            {% endfor %}
+        </ul>
+    </li>
+</ul>

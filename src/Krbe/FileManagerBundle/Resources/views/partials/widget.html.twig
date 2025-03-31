@@ -1,0 +1,125 @@
+    <link rel="stylesheet" href="{{ asset('bundles/krbefilemanager/css/krbe-filemanager.css') }}">
+
+    <div data-krbe-filemanager="true">
+        <!-- Volet gauche : Arborescence des dossiers -->
+        <aside id="directory-nav">
+            <nav id="directory-nav-tree">
+                {{ render(controller('Krbe\\FileManagerBundle\\Controller\\FileManagerController::widgetListfolders', { currentFolder: currentFolder })) }}
+            </nav>
+        </aside>
+
+        <!-- Volet droit : Contenu du dossier courant -->
+        <main id="folder-content">
+            <header>
+                <input type="text" id="search" placeholder="Rechercher..." aria-label="Recherche">
+                <div class="controls">
+                    <button id="toggle-view">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6374f8d9b67f094e4896c648-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><line class="cls-6374f8d9b67f094e4896c648-1" x1="4.33" y1="3.38" x2="23.5" y2="3.38"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="4.33" y1="9.13" x2="23.5" y2="9.13"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="4.33" y1="14.88" x2="23.5" y2="14.88"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="4.33" y1="20.63" x2="23.5" y2="20.63"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="0.5" y1="3.38" x2="2.42" y2="3.38"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="0.5" y1="9.13" x2="2.42" y2="9.13"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="0.5" y1="14.88" x2="2.42" y2="14.88"></line><line class="cls-6374f8d9b67f094e4896c648-1" x1="0.5" y1="20.63" x2="2.42" y2="20.63"></line></svg>
+                        <span>Changer de vue</span>
+                    </button>
+                    <!-- Bouton d'importation visible pour déclencher l'upload -->
+                    <button id="import-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-63ce7424ea57ea6c838005be-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><line class="cls-63ce7424ea57ea6c838005be-1" x1="12" y1="2.5" x2="12" y2="19.64"></line><polyline class="cls-63ce7424ea57ea6c838005be-1" points="19.62 10.12 12 2.5 4.38 10.12"></polyline><polyline class="cls-63ce7424ea57ea6c838005be-1" points="19.62 18.69 19.62 22.5 4.38 22.5 4.38 18.69"></polyline></svg>
+                        <span>Importer un fichier</span>
+                    </button>
+                    <button id="create-folder-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f24e-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><line class="cls-637647fac3a86d32eae6f24e-1" x1="7.23" y1="14.86" x2="16.77" y2="14.86"></line><line class="cls-637647fac3a86d32eae6f24e-1" x1="12" y1="10.09" x2="12" y2="19.64"></line><path class="cls-637647fac3a86d32eae6f24e-1" d="M12,3.41,10.09,1.5H1.5V20.59A1.9,1.9,0,0,0,3.41,22.5H20.59a1.9,1.9,0,0,0,1.91-1.91V3.41Z"></path><line class="cls-637647fac3a86d32eae6f24e-1" x1="1.5" y1="7.23" x2="22.5" y2="7.23"></line></svg>
+                        <span>Creer dossier</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Zone de contenu (fichiers et dossiers) -->
+            <section id="files-list" class="files-list" krbe-filemanager-currentfolder="{{ currentFolder }}">
+                {{ render(controller('Krbe\\FileManagerBundle\\Controller\\FileManagerController::widgetListfiles', { currentFolder: currentFolder })) }}
+            </section>
+
+            <!-- Dropzone overlay qui recouvre toute la zone de contenu -->
+            <div id="dropzone-overlay">
+                <p>Glissez-déposer vos fichiers ici</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal d'édition pour Crop (affiché lors du clic sur le bouton Crop) -->
+    <div id="crop-modal" class="modal">
+        <div class="modal-content">
+            {#<h2>Edition de l'image</h2>#}
+            <div class="crop-zone">
+                <img id="crop-image" src="" alt="Image à cropper">
+            </div>
+            <div class="crop-dimensions">
+                <label for="crop-width">Largeur :</label>
+                <input type="number" id="crop-width" placeholder="Largeur" min="1">
+                <label for="crop-height">Hauteur :</label>
+                <input type="number" id="crop-height" placeholder="Hauteur" min="1">
+                <button id="apply-dimensions">Appliquer</button>
+            </div>
+            <div class="crop-actions">
+                <button id="crop-confirm">Valider</button>
+                <button id="crop-cancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modale pour le déplacement -->
+    <div id="move-modal" class="modal">
+        <div class="modal-content">
+            <h2>Sélectionnez la destination</h2>
+            <div id="move-directory-tree">
+                {{ include('@KrbeFileManager/partials/move_tree.html.twig', { directoryTree: directoryTree }) }}
+            </div>
+            <div class="modal-actions">
+                <button id="move-confirm">Confirmer</button>
+                <button id="move-cancel">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulaire d'upload caché, déclenché par le bouton d'importation -->
+    <form id="hidden-upload-form" action="{{ path('file_manager_upload') }}" class="dropzone" style="display:none;">
+        <div class="dz-message">
+            Glisser-déposer des fichiers ici ou cliquer pour téléverser.
+        </div>
+        <input type="hidden" name="subFolder" value="{{ currentFolder }}">
+    </form>
+
+    <!-- Intégration de DropzoneJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+    <!-- Intégration de CropperJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
+    <script>
+        const krbeFilemanagerUrlWidgetListfolders = '{{ path('file_manager_widget_listfolders') }}';
+        const krbeFilemanagerUrlWidgetListfiles = '{{ path('file_manager_widget_listfiles') }}';
+        const krbeFilemanagerUrlFctCreateFolder = '{{ path('file_manager_create_folder') }}';
+        const krbeFilemanagerUrlFctCrop = '{{ path('file_manager_crop') }}';
+        const krbeFilemanagerUrlFctRename = '{{ path('file_manager_rename') }}';
+        const krbeFilemanagerUrlFctMove = '{{ path('file_manager_move') }}';
+        const krbeFilemanagerUrlFctDelete = '{{ path('file_manager_delete') }}';
+        let subFolder = '{{ currentFolder }}';
+        const translations = {
+            new_folder_name: "{{ 'krbe_file_manager.ui.confirm.new_folder_name'|trans }}",
+            invalid_folder_name: "{{ 'krbe_file_manager.ui.confirm.invalid_folder_name'|trans }}",
+            folder_created: "{{ 'krbe_file_manager.ui.success.folder_created'|trans }}",
+            folder_create_error: "{{ 'krbe_file_manager.ui.error.folder_create_generic'|trans }}",
+            folder_create_error_generic: "{{ 'krbe_file_manager.ui.error.folder_create'|trans }}",
+            invalid_dimensions: "{{ 'krbe_file_manager.ui.confirm.invalid_dimensions'|trans }}",
+            image_cropped_successfully: "{{ 'krbe_file_manager.ui.success.cropped'|trans }}",
+            error_during_cropping: "{{ 'krbe_file_manager.ui.error.crop'|trans }}",
+            select_destination_folder: "{{ 'krbe_file_manager.ui.confirm.select_destination_folder'|trans }}",
+            move_successful: "{{ 'krbe_file_manager.ui.success.moved'|trans }}",
+            error_during_move: "{{ 'krbe_file_manager.ui.error.move'|trans }}",
+            renamed_successfully: "{{ 'krbe_file_manager.ui.success.renamed'|trans }}",
+            error_during_renaming: "{{ 'krbe_file_manager.ui.error.rename'|trans }}",
+            deleted_successfully: "{{ 'krbe_file_manager.ui.success.deleted'|trans }}",
+            error_during_deletion: "{{ 'krbe_file_manager.ui.error.delete'|trans }}",
+            confirm_delete: "{{ 'krbe_file_manager.ui.confirm.delete'|trans }}",
+            enter_new_name: "{{ 'krbe_file_manager.ui.confirm.enter_new_name'|trans }}",
+            error_during_upload: "{{ 'krbe_file_manager.ui.error.upload'|trans }}"
+        };
+    </script>
+    <script src="{{ asset('bundles/krbefilemanager/js/krbe-filemanager.js') }}"></script>

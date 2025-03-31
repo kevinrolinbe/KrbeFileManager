@@ -1,0 +1,14 @@
+<li>
+    <a href="#"
+       class="folder-link"
+       data-krbe-filemanager-folder="{{ node.path }}">
+        {{ node.name }}
+    </a>
+    {% if node.children is defined and node.children|length > 0 %}
+        <ul>
+            {% for child in node.children %}
+                {{ include('@KrbeFileManager/partials/list_folders_node.html.twig', { node: child }) }}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

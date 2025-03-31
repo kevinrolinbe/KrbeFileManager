@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html  lang="{% block metaLang %}fr{% endblock %}">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block metaTitle %}Welcome!{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+
+        {% block javascripts %}{% endblock %}
+        {% block importmap %}{{ importmap('app') }}{% endblock %}
+    </head>
+    <body>
+        {% include '@KrbeFileManager/partials/widget.html.twig' with {'currentFolder': ''} %}
+    </body>
+</html>

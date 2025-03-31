@@ -1,0 +1,102 @@
+krbe_file_manager:
+    title: "Gestionnaire de fichiers"
+
+    # Messages d'interface utilisateur
+    ui:
+        # Actions
+        actions:
+            rename: "Renommer"
+            delete: "Supprimer"
+            move: "Déplacer"
+            crop: "Recadrer"
+            upload: "Uploader"
+            create_folder: "Créer un dossier"
+            refresh: "Actualiser"
+            back: "Retour"
+            confirm: "Confirmer"
+            cancel: "Annuler"
+        
+        # Messages de confirmation
+        confirm:
+            delete: "Voulez-vous vraiment supprimer cet élément ?"
+            move: "Voulez-vous déplacer cet élément ?"
+            crop: "Voulez-vous recadrer cette image ?"
+            new_folder_name: "Nom du nouveau dossier :"
+            invalid_folder_name: "Veuillez entrer un nom de dossier valide."
+            invalid_dimensions: "Veuillez entrer des valeurs valides pour la largeur et la hauteur."
+            select_destination_folder: "Veuillez sélectionner un dossier de destination."
+            enter_new_name: "Entrez le nouveau nom :"
+        
+        # Messages de succès
+        success:
+            renamed: "Renommé avec succès !"
+            deleted: "Supprimé avec succès !"
+            moved: "Déplacement réussi !"
+            cropped: "Image recadrée avec succès !"
+            folder_created: "Dossier créé avec succès !"
+            file_uploaded: "Fichier uploadé avec succès !"
+        
+        # Messages d'erreur
+        error:
+            rename: "Erreur lors du renommage"
+            delete: "Erreur lors de la suppression"
+            move: "Erreur lors du déplacement"
+            crop: "Erreur lors du recadrage"
+            upload: "Erreur lors de l'upload"
+            folder_create: "Erreur lors de la création du dossier"
+            folder_create_generic: "Erreur : Impossible de créer le dossier."
+            invalid_file: "Type de fichier non autorisé"
+            file_too_large: "Le fichier est trop volumineux"
+            destination_required: "Veuillez sélectionner un dossier de destination"
+        
+        # Formulaires et champs
+        forms:
+            new_name: "Entrez le nouveau nom :"
+            folder_name: "Nom du dossier :"
+            select_destination: "Sélectionnez la destination :"
+            select_file: "Sélectionnez un fichier :"
+        
+        # États et statuts
+        status:
+            loading: "Chargement..."
+            processing: "Traitement en cours..."
+            no_files: "Aucun fichier"
+            no_folders: "Aucun dossier"
+            empty_folder: "Ce dossier est vide"
+    
+    # Messages d'erreur système
+    errors:
+        s3_config_required: "Pour le stockage S3, les paramètres bucket, key, secret et region sont obligatoires"
+        local_path_invalid: "Le chemin de stockage local ne peut pas contenir '..'"
+        empty_filename: "Le nom du fichier ne peut pas être vide"
+        ascii_conversion_failed: "Impossible de convertir le nom du fichier en ASCII"
+        invalid_operation: "Opération invalide"
+        file_not_found: "Fichier non trouvé"
+        folder_not_found: "Dossier non trouvé"
+        permission_denied: "Permission refusée"
+        invalid_file_type: "Type de fichier non autorisé"
+        file_exists: "Un fichier avec ce nom existe déjà"
+        invalid_path: "Chemin invalide"
+        storage_error: "Erreur de stockage"
+        processing_error: "Erreur de traitement"
+
+    # Configuration
+    config:
+        max_file_size: "Taille maximale des fichiers en octets"
+        allowed_mime_types: "Types MIME autorisés"
+        image_processing:
+            compression_enabled: "Active/désactive la compression d'image"
+            compression_quality: "Qualité de compression (0-100)"
+            png_compression_level: "Niveau de compression PNG (0-9)"
+            create_webp: "Crée une version WebP des images"
+            keep_original: "Conserve les images originales"
+        storage:
+            type: "Type de stockage à utiliser"
+            local:
+                path: "Chemin du stockage local"
+            s3:
+                key: "Clé d'accès AWS"
+                secret: "Clé secrète AWS"
+                region: "Région AWS"
+                bucket: "Nom du bucket S3"
+                path: "Préfixe pour les fichiers dans le bucket"

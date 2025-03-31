@@ -1,0 +1,24 @@
+{
+  "name": "krbe/file-manager-bundle",
+  "description": "File manager bundle for Symfony",
+  "keywords": ["Symfony","File manager"],
+  "homepage": "https://github.com/kevinrolinbe/KrbeFileManager",
+  "license": "MIT",
+  "authors": [
+      {
+          "name": "Kevin Rolin",
+          "email": "info@kevinrolin.be",
+          "homepage": "http://kevinrolin.be",
+          "role": "Developer"
+      }
+  ],
+  "type": "symfony-bundle",
+  "autoload": {
+    "psr-4": { "Krbe\\FileManagerBundle\\": "src/Krbe/FileManagerBundle/" }
+  },
+  "require": {
+    "php": ">=8.1",
+    "symfony/framework-bundle": "^7.0",
+    "aws/aws-sdk-php": "^3.0"
+  }
+}
