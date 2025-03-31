@@ -1,0 +1,133 @@
+{% if parent %}
+    <article class="folder-item">
+        <div class="cellImg">
+            <a href="#"
+               class="folder-link"
+               data-krbe-filemanager-folder="{{ parent.relativePath }}">
+                <div class="svg">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6374f543b67f094e4896c5c8-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><circle class="cls-6374f543b67f094e4896c5c8-1" cx="12" cy="12" r="10.5"></circle><path class="cls-6374f543b67f094e4896c5c8-1" d="M7.23,7.23h7.63a3.82,3.82,0,0,1,3.82,3.82h0a3.82,3.82,0,0,1-3.82,3.81H7.23"></path><polyline class="cls-6374f543b67f094e4896c5c8-1" points="11.04 18.68 7.23 14.86 11.04 11.04"></polyline></svg>
+                </div>
+            </a>
+        </div>
+        <div class="cellName">
+            <a href="#"
+               class="folder-link"
+               data-krbe-filemanager-folder="{{ parent.relativePath }}">
+                <i class="fa fa-folder" aria-hidden="true"></i>
+                <p>{% if parent.relativePath %}{{ parent.name }}{% else %}Root{% endif %}</p>
+            </a>
+        </div>
+        <div class="cellSize">&nbsp;</div>
+        <div class="cellUpdate">&nbsp;</div>
+        <div class="cellActions"></div>
+    </article>
+{% endif %}
+
+{% if files is not empty %}
+    {% for item in files %}
+        {% if item.isDirectory %}
+            <article class="folder-item"
+                     data-type="folder"
+                     data-file="{{ item.relativePath }}"
+            >
+                <div class="cellImg">
+                    <a href="#"
+                       class="folder-link"
+                       data-krbe-filemanager-folder="{{ item.relativePath }}">
+                        <div class="svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f1eb-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-637647fac3a86d32eae6f1eb-1" d="M12,3.41,10.09,1.5H1.5V20.59A1.9,1.9,0,0,0,3.41,22.5H20.59a1.9,1.9,0,0,0,1.91-1.91V3.41Z"></path><line class="cls-637647fac3a86d32eae6f1eb-1" x1="1.5" y1="7.23" x2="22.5" y2="7.23"></line></svg>
+                        </div>
+                    </a>
+                </div>
+                <div class="cellName">
+                    <a href="#"
+                       class="folder-link"
+                       data-krbe-filemanager-folder="{{ item.relativePath }}">
+                        <i class="fa fa-folder" aria-hidden="true"></i>
+                        <p>{{ item.name }}</p>
+                    </a>
+                </div>
+                <div class="cellSize">&nbsp;</div>
+                <div class="cellUpdate">
+                    {{ item.lastModified }}
+                </div>
+                <div class="cellActions">
+                    <div class="actions">
+                        <button class="rename-btn" title="Renommer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6375f1aeb67f094e4896ca2e-1,.cls-6375f1aeb67f094e4896ca2e-2{fill:none;stroke:currentColor;}.cls-6375f1aeb67f094e4896ca2e-1{stroke-miterlimit:10;}.cls-6375f1aeb67f094e4896ca2e-2{stroke-linecap:round;stroke-linejoin:round;}</style></defs><g id="price_tag" data-name="price tag"><polygon class="cls-6375f1aeb67f094e4896ca2e-1" points="3.41 1.5 1.5 3.41 1.5 11.04 12.96 22.5 22.5 12.96 11.04 1.5 3.41 1.5"></polygon><circle class="cls-6375f1aeb67f094e4896ca2e-2" cx="6.27" cy="6.27" r="1.91"></circle></g></svg>
+                        </button>
+                        <button class="delete-btn" title="Supprimer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6374f8d9b67f094e4896c66b-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-6374f8d9b67f094e4896c66b-1" d="M16.88,22.5H7.12a1.9,1.9,0,0,1-1.9-1.8L4.36,5.32H19.64L18.78,20.7A1.9,1.9,0,0,1,16.88,22.5Z"></path><line class="cls-6374f8d9b67f094e4896c66b-1" x1="2.45" y1="5.32" x2="21.55" y2="5.32"></line><path class="cls-6374f8d9b67f094e4896c66b-1" d="M10.09,1.5h3.82a1.91,1.91,0,0,1,1.91,1.91V5.32a0,0,0,0,1,0,0H8.18a0,0,0,0,1,0,0V3.41A1.91,1.91,0,0,1,10.09,1.5Z"></path><line class="cls-6374f8d9b67f094e4896c66b-1" x1="12" y1="8.18" x2="12" y2="19.64"></line><line class="cls-6374f8d9b67f094e4896c66b-1" x1="15.82" y1="8.18" x2="15.82" y2="19.64"></line><line class="cls-6374f8d9b67f094e4896c66b-1" x1="8.18" y1="8.18" x2="8.18" y2="19.64"></line></svg>
+                        </button>
+                        <button class="move-btn" title="Déplacer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-63ce7424ea57ea6c83800559-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><polyline class="cls-63ce7424ea57ea6c83800559-1" points="13.89 15.82 13.89 22.5 1.48 22.5 1.48 1.5 13.89 1.5 13.89 8.18"></polyline><line class="cls-63ce7424ea57ea6c83800559-1" x1="8.16" y1="12" x2="21.52" y2="12"></line><polyline class="cls-63ce7424ea57ea6c83800559-1" points="16.75 16.77 21.52 12 16.75 7.23"></polyline></svg>
+                        </button>
+                    </div>
+                </div>
+            </article>
+        {% else %}
+            <article class="file-item"
+                     data-type="file"
+                     data-file="{{ item.relativePath }}"
+                     data-public="{{ item.publicPath }}"
+                     data-name="{{ item.nameWithoutExt }}"
+            >
+                <div class="cellImg">
+                    {% if item.type == "image" %}
+                        <img src="{{ item.publicPath }}"
+                             alt="{{ item.name }}"
+                             title="{{ item.name }}"
+                             width="100"
+                             data-relative-path="{{ item.relativePath }}">
+                    {% elseif item.type == "pdf" %}
+                        <div class="svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f276-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><line class="cls-637647fac3a86d32eae6f276-1" x1="6.27" y1="11.05" x2="17.73" y2="11.05"></line><line class="cls-637647fac3a86d32eae6f276-1" x1="6.27" y1="14.86" x2="17.73" y2="14.86"></line><line class="cls-637647fac3a86d32eae6f276-1" x1="6.27" y1="18.68" x2="17.73" y2="18.68"></line><polygon class="cls-637647fac3a86d32eae6f276-1" points="20.59 6.27 20.59 22.5 3.41 22.5 3.41 1.5 15.82 1.5 20.59 6.27"></polygon><polygon class="cls-637647fac3a86d32eae6f276-1" points="20.59 6.27 20.59 7.23 14.86 7.23 14.86 1.5 15.82 1.5 20.59 6.27"></polygon></svg>
+                        </div>
+                    {% elseif item.type == "zip" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f284-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-637647fac3a86d32eae6f284-1" d="M3.41,22.5H20.59V5.32L16.77,1.5H3.41Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M12,1.5h0a1.91,1.91,0,0,1,1.91,1.91V7.23a0,0,0,0,1,0,0H10.09a0,0,0,0,1,0,0V3.41A1.91,1.91,0,0,1,12,1.5Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M12,11.05h0Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M13.91,13h0Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M12,14.86h0Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M13.91,16.77h0Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M13.91,20.59h0Z"></path><path class="cls-637647fac3a86d32eae6f284-1" d="M12,18.68h0Z"></path></svg>
+                    {% elseif item.type == "audio" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f24a-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-637647fac3a86d32eae6f24a-1" d="M8.18,17.73a1,1,0,1,1,1,.95,1,1,0,0,1-1-.95"></path><circle class="cls-637647fac3a86d32eae6f24a-1" cx="14.86" cy="16.77" r="0.95"></circle><polyline class="cls-637647fac3a86d32eae6f24a-1" points="15.82 16.77 15.82 11.04 10.09 12 10.09 17.73"></polyline><polygon class="cls-637647fac3a86d32eae6f24a-1" points="20.59 6.27 20.59 22.5 3.41 22.5 3.41 1.5 15.82 1.5 20.59 6.27"></polygon><polygon class="cls-637647fac3a86d32eae6f24a-1" points="20.59 6.27 20.59 7.23 14.86 7.23 14.86 1.5 15.82 1.5 20.59 6.27"></polygon></svg>
+                    {% elseif item.type == "video" %}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f27d-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><rect class="cls-637647fac3a86d32eae6f27d-1" x="7.23" y="11.05" width="5.73" height="6.68"></rect><polygon class="cls-637647fac3a86d32eae6f27d-1" points="12.96 14.86 15.82 17.73 16.77 17.73 16.77 11.04 15.82 11.04 12.96 13.91 12.96 14.86"></polygon><polygon class="cls-637647fac3a86d32eae6f27d-1" points="20.59 6.27 20.59 22.5 3.41 22.5 3.41 1.5 15.82 1.5 20.59 6.27"></polygon><polygon class="cls-637647fac3a86d32eae6f27d-1" points="20.59 6.27 20.59 7.23 14.86 7.23 14.86 1.5 15.82 1.5 20.59 6.27"></polygon></svg>
+                    {% else %}
+                        <div class="svg">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637647fac3a86d32eae6f207-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-637647fac3a86d32eae6f207-1" d="M15.82,13.91h0Z"></path><polygon class="cls-637647fac3a86d32eae6f207-1" points="20.59 6.27 20.59 22.5 3.41 22.5 3.41 1.5 15.82 1.5 20.59 6.27"></polygon><polygon class="cls-637647fac3a86d32eae6f207-1" points="20.59 6.27 20.59 7.23 14.86 7.23 14.86 1.5 15.82 1.5 20.59 6.27"></polygon></svg>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="cellName">
+                    <p title="{{ item.name }}">{{ item.name }}</p>
+                </div>
+                <div class="cellSize">
+                    {{ item.size }}
+                </div>
+                <div class="cellUpdate">
+                    {{ item.lastModified }}
+                </div>
+                <div class="cellActions">
+                    <div class="actions">
+                        {% if picker is defined %}
+                            <button class="select-btn">Sélectionner</button>
+                        {% endif %}
+                        <button class="rename-btn" title="Renommer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6375f1aeb67f094e4896ca2e-1,.cls-6375f1aeb67f094e4896ca2e-2{fill:none;stroke:currentColor;}.cls-6375f1aeb67f094e4896ca2e-1{stroke-miterlimit:10;}.cls-6375f1aeb67f094e4896ca2e-2{stroke-linecap:round;stroke-linejoin:round;}</style></defs><g id="price_tag" data-name="price tag"><polygon class="cls-6375f1aeb67f094e4896ca2e-1" points="3.41 1.5 1.5 3.41 1.5 11.04 12.96 22.5 22.5 12.96 11.04 1.5 3.41 1.5"></polygon><circle class="cls-6375f1aeb67f094e4896ca2e-2" cx="6.27" cy="6.27" r="1.91"></circle></g></svg>
+                        </button>
+                        <button class="delete-btn" title="Supprimer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-6374f8d9b67f094e4896c66b-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><path class="cls-6374f8d9b67f094e4896c66b-1" d="M16.88,22.5H7.12a1.9,1.9,0,0,1-1.9-1.8L4.36,5.32H19.64L18.78,20.7A1.9,1.9,0,0,1,16.88,22.5Z"></path><line class="cls-6374f8d9b67f094e4896c66b-1" x1="2.45" y1="5.32" x2="21.55" y2="5.32"></line><path class="cls-6374f8d9b67f094e4896c66b-1" d="M10.09,1.5h3.82a1.91,1.91,0,0,1,1.91,1.91V5.32a0,0,0,0,1,0,0H8.18a0,0,0,0,1,0,0V3.41A1.91,1.91,0,0,1,10.09,1.5Z"></path><line class="cls-6374f8d9b67f094e4896c66b-1" x1="12" y1="8.18" x2="12" y2="19.64"></line><line class="cls-6374f8d9b67f094e4896c66b-1" x1="15.82" y1="8.18" x2="15.82" y2="19.64"></line><line class="cls-6374f8d9b67f094e4896c66b-1" x1="8.18" y1="8.18" x2="8.18" y2="19.64"></line></svg>
+                        </button>
+                        <button class="move-btn" title="Déplacer">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-63ce7424ea57ea6c83800559-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><polyline class="cls-63ce7424ea57ea6c83800559-1" points="13.89 15.82 13.89 22.5 1.48 22.5 1.48 1.5 13.89 1.5 13.89 8.18"></polyline><line class="cls-63ce7424ea57ea6c83800559-1" x1="8.16" y1="12" x2="21.52" y2="12"></line><polyline class="cls-63ce7424ea57ea6c83800559-1" points="16.75 16.77 21.52 12 16.75 7.23"></polyline></svg>
+                        </button>
+                        {% if item.type == "image" %}
+                        <button class="crop-btn" title="Crop">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="1.5" width="24" height="24"><defs><style>.cls-637b8d40f95e86b59c57a2d3-1{fill:none;stroke:currentColor;stroke-miterlimit:10;}</style></defs><g id="roll_brush" data-name="roll brush"><polyline class="cls-637b8d40f95e86b59c57a2d3-1" points="23.47 17.77 6.2 17.77 6.2 0.51"></polyline><line class="cls-637b8d40f95e86b59c57a2d3-1" x1="17.71" y1="23.53" x2="17.71" y2="20.65"></line><polyline class="cls-637b8d40f95e86b59c57a2d3-1" points="9.08 6.26 17.71 6.26 17.71 17.77"></polyline><line class="cls-637b8d40f95e86b59c57a2d3-1" x1="6.2" y1="6.26" x2="0.45" y2="6.26"></line></g></svg>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <p>Aucun fichier ou dossier trouvé.</p>
+{% endif %}

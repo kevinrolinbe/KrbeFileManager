@@ -1,0 +1,69 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Krbe\FileManagerBundle\:
+    resource: '../*'
+    exclude:
+      - '../DependencyInjection/'
+      - '../Resources/'
+      - '../Tests/'
+
+  # Définition explicite des services du bundle
+
+  # 1. Services de stockage
+  krbe_file_manager.storage.local:
+    class: Krbe\FileManagerBundle\Service\Storage\LocalStorage
+    arguments:
+      $kernelProjectDir: '%kernel.project_dir%'
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $imageProcessingService: '@Krbe\FileManagerBundle\Service\ImageProcessingService'
+      $fileNameHelper: '@Krbe\FileManagerBundle\Helper\FileNameHelper'
+      $config: '%krbe_file_manager%'
+
+  krbe_file_manager.storage.s3:
+    class: Krbe\FileManagerBundle\Service\Storage\S3Storage
+    arguments:
+      $kernelProjectDir: '%kernel.project_dir%'
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $imageProcessingService: '@Krbe\FileManagerBundle\Service\ImageProcessingService'
+      $fileNameHelper: '@Krbe\FileManagerBundle\Helper\FileNameHelper'
+      $config: '%krbe_file_manager%'
+
+  # 2. Service de gestion des fichiers
+  Krbe\FileManagerBundle\Service\FileManagerService:
+    arguments:
+      $storageService: '@krbe_file_manager.storage'
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $config: '%krbe_file_manager%'
+
+  # 3. Service de traitement d'images
+  Krbe\FileManagerBundle\Service\ImageProcessingService:
+    arguments:
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $config: '%krbe_file_manager%'
+
+  # 4. Contrôleur du File Manager
+  Krbe\FileManagerBundle\Controller\FileManagerController:
+    arguments:
+      $fileManagerService: '@Krbe\FileManagerBundle\Service\FileManagerService'
+      $imageProcessingService: '@Krbe\FileManagerBundle\Service\ImageProcessingService'
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $fileNameHelper: '@Krbe\FileManagerBundle\Helper\FileNameHelper'
+
+  # 5. Services utilitaires
+  Krbe\FileManagerBundle\Helper\FileNameHelper:
+    arguments:
+      $config: '%krbe_file_manager%'
+      $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
+      $translator: '@translator'
+
+  Krbe\FileManagerBundle\Resolver\DefaultUploadPathResolver:
+    arguments:
+      $kernelProjectDir: '%kernel.project_dir%'
+      $config: '%krbe_file_manager%'
+
+  Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface:
+    alias: Krbe\FileManagerBundle\Resolver\DefaultUploadPathResolver

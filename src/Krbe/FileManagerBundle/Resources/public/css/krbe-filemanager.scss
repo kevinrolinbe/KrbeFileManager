@@ -1,0 +1,569 @@
+// Variables de couleurs
+// Couleurs de base
+$color-white: #fff;
+$color-black: #000;
+
+// Couleurs de fond
+$color-background-main: #f5f5f5;
+$color-background-dark: #2b2b2b;
+$color-background-hover: #444;
+$color-background-light: #f9f9f9;
+$color-background-alternate: #dadada;
+
+// Couleurs des bordures
+$color-border: #ddd;
+$color-border-input: #ccc;
+
+// Couleurs du texte
+$color-text-primary: #333;
+$color-text-secondary: #666;
+
+// Couleurs des liens et actions
+$color-link-primary: #4e98dc;
+$color-link-active: #206baf;
+
+// Couleurs des overlays
+$color-overlay: rgba(0, 0, 0, 0.5);
+$color-shadow: rgba(0, 0, 0, 0.2);
+$color-icon-background: #0000001a;
+
+/* Reset de base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: $color-background-main;
+}
+
+/* Conteneur principal du file manager */
+div[data-krbe-filemanager] {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    height: 100vh;
+
+    // Mobile
+    @media screen and (max-width: 768px) {
+        grid-template-columns: 1fr;
+    }
+
+    /* Volet gauche : Navigation et arborescence */
+    #directory-nav {
+        background: $color-background-dark;
+        color: $color-white;
+        padding: 15px;
+        overflow-y: auto;
+
+        // Mobile
+        @media screen and (max-width: 768px) {
+            display: none;
+        }
+
+        nav {
+            font-size: 14px;
+            a {
+                color: $color-white;
+                text-decoration: none;
+                display: block;
+                padding: 0;
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
+
+            .directory-tree {
+                list-style: none;
+                margin: 0;
+                padding-left: 0;
+
+                li{
+                    &:has(li.current) {
+                        > a{
+                            color: $color-link-primary;
+                        }
+                    }
+
+                    &.current{
+                        > a{
+                            color: $color-link-active;
+                        }
+                    }
+                }
+
+                ul{
+                    li {
+                        position: relative;
+                        padding-left: 18px;
+                        line-height: 20px;
+                        list-style: none;
+
+                        &::before {
+                            content: "";
+                            display: block;
+                            position: absolute;
+                            width: 2px;
+                            height: 100%;
+                            background: $color-white;
+                            left: 6px;
+                        }
+
+                        a {
+                            &::before {
+                                content: "\251D"; // affiche ┝ par défaut
+                                position: absolute;
+                                left: 0;
+                                color: $color-white;
+                            }
+                        }
+
+                        &:last-child {
+                            &::before {
+                                height: 10px;
+                            }
+                            a {
+                                &::before {
+                                    content: "\2517"; // affiche ┗ pour le dernier élément
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    /* Volet droit : Contenu du dossier courant */
+    #folder-content {
+        padding: 20px;
+        background: $color-white;
+        overflow-y: auto;
+        position: relative;
+
+        // Mobile
+        @media screen and (max-width: 768px) {
+            padding: 10px;
+        }
+
+        header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+
+            input[type="text"] {
+                padding: 5px;
+                border: 1px solid $color-border-input;
+                border-radius: 3px;
+            }
+
+            .controls {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+
+                button {
+                    display: flex;
+                    gap: 5px;
+                    align-items: center;
+
+                    padding: 5px 10px;
+                    border: none;
+                    border-radius: 3px;
+                    background: $color-background-dark;
+                    color: $color-white;
+                    cursor: pointer;
+                    transition: background 0.3s;
+                    &:hover {
+                        background: $color-background-hover;
+                    }
+
+                    svg{
+                        height: 16px;
+                        width: 16px;
+                    }
+
+                    span{
+                        // Mobile
+                        @media screen and (max-width: 768px) {
+                            display: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        /* Liste des fichiers et dossiers */
+        #files-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            width: 100%;
+
+            // Mobile
+            @media screen and (max-width: 768px) {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+
+            article {
+                background: $color-background-light;
+                border: 1px solid $color-border;
+                padding: 5px;
+                border-radius: 3px;
+                transition: box-shadow 0.3s ease;
+
+                &:hover {
+                    box-shadow: 0 0 5px $color-shadow;
+                }
+
+                div[class^="cell"] {
+                    padding: 5px;
+
+                    &.cellImg{
+                        img,
+                        div.svg{
+                            width: 100%;
+                            aspect-ratio: 1 / 1;
+                            object-fit: contain;
+                            background: $color-icon-background;
+                            border-radius: 3px;
+                        }
+                        div.svg{
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+
+                            svg {
+                                width: 50% !important;
+                                height: auto;
+                            }
+                        }
+                        a{
+                            color: $color-text-primary;
+                        }
+                    }
+                    &.cellName{
+                        text-align: center;
+                        a.folder-link {
+                            text-decoration: none;
+                            color: $color-text-primary;
+
+                            i {
+                                font-size: 1.2em;
+                            }
+                        }
+
+                        p {
+                            margin: 0;
+                            font-size: 12px;
+                            word-break: break-all;
+                            text-align: left;
+
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+                    }
+                    &.cellSize, &.cellUpdate{
+                        display: none;
+                        text-align: center;
+                        color: $color-text-secondary;
+                        font-size: 0.8em;
+                        text-wrap: nowrap;
+                    }
+                    &.cellActions{
+                        div.actions{
+                            display: flex;
+                            justify-content: center;
+                            gap: 5px;
+
+                            button {
+                                padding: 5px;
+                                font-size: 0.8em;
+                                border: none;
+                                background: $color-background-dark;
+                                color: $color-white;
+                                border-radius: 3px;
+                                cursor: pointer;
+                                transition: background 0.3s;
+
+                                display:flex;
+                                align-items: center;
+                                justify-content: center;
+                                width: 24px;
+                                height: 24px;
+                                background-size: contain;
+                                border: none;
+
+                                &:hover {
+                                    background: $color-background-hover;
+                                }
+                            }
+                        }
+                    }// #files-list article div.cellActions
+                }// #files-list article div[class^="cell"]
+            }// #files-list article
+
+            // Mode listing activé par l'ajout de la classe "files-list"
+            &.list-view {
+                display: table;
+
+                article {
+                    display: table-row;
+
+                    &:nth-child(odd) {
+                        background: $color-background-alternate;
+                    }
+
+                    div[class^="cell"] {
+                        display: table-cell;
+                        width: 1px;
+                        vertical-align: middle;
+
+                        &.cellImg{
+                            width: 40px;
+                            min-width: 40px;
+
+                            // Mobile
+                            @media screen and (max-width: 768px) {
+                                width: 30px;
+                                min-width: 30px;
+                            }
+
+                            img,
+                            div.svg{
+                            }
+                            div.svg{
+                                svg {
+                                }
+                            }
+                        }
+                        &.cellName{
+                            width: 1000px;
+                        }
+                        &.cellSize{
+                            display: table-cell;
+                        }
+                        &.cellUpdate{
+                            display: table-cell;
+                        }
+                        &.cellActions{
+                            div.actions{
+                                justify-content: left;
+                            }
+                        }
+                    }
+                }
+            }// #files-list .list-view
+        }// #files-list
+
+        /* Dropzone overlay pour l'upload de fichiers */
+        #dropzone-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: $color-overlay;
+            color: $color-white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            text-align: center;
+            z-index: 10;
+            &.active {
+                display: flex;
+            }
+        }
+    }
+}
+
+// Styles de base pour les modaux
+.modal {
+    display: none; // caché par défaut
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: $color-overlay;
+
+    .modal-content {
+        background: $color-white;
+        margin: auto;
+        padding: 20px;
+        border-radius: 5px;
+        //width: 90%;
+        //max-width: 800px;
+        max-width: 95%;
+        position: relative;
+        //max-height: 90vh;
+        max-height: 95%;
+        overflow-y: auto;
+
+        // Mobile
+        @media screen and (max-width: 768px) {
+            margin: 5% auto;
+            width: 95%;
+            padding: 15px;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: $color-text-primary;
+            cursor: pointer;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid $color-border-input;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 8px;
+            border: none;
+            background: $color-background-dark;
+            color: $color-white;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.3s;
+
+            &:hover {
+                background: $color-background-hover;
+            }
+        }
+    }
+}
+
+/* Styles spécifiques pour la crop-modal */
+#crop-modal{
+    .modal-content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 95%;
+        max-width: 1000px;
+        height: 95%;
+
+        .crop-zone{
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 3px;
+            margin-bottom: 15px;
+        }
+        .crop-dimensions{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .crop-actions{
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    }
+}
+
+/* Styles spécifiques pour la move-modal */
+#move-modal{
+    .modal-content{
+        max-width: 90%;
+        max-height: 90%;
+
+        #move-directory-tree {
+            max-height: 50vh;
+            overflow-y: auto;
+            padding: 10px;
+            border-radius: 3px;
+            margin-bottom: 15px;
+
+            ul{
+                li {
+                    position: relative;
+                    padding-left: 18px;
+                    line-height: 20px;
+                    list-style: none;
+
+                    &::before {
+                        content: "";
+                        display: block;
+                        position: absolute;
+                        width: 2px;
+                        height: 100%;
+                        background: $color-text-primary;
+                        left: 7px;
+                    }
+
+                    a {
+                        color: $color-text-primary;
+                        text-decoration: none;
+
+                        &::before {
+                            content: "\251D"; // affiche ┝ par défaut
+                            position: absolute;
+                            left: 0;
+                            color: $color-text-primary;
+                        }
+
+                        &:hover {
+                            color: $color-link-primary;
+                        }
+                    }
+
+                    &:last-child {
+                        &::before {
+                            height: 10px;
+                        }
+                        a {
+                            &::before {
+                                content: "\2517"; // affiche ┗ pour le dernier élément
+                            }
+                        }
+                    }
+
+                    &.selected {
+                        a{
+                            color: $color-link-active;
+                        }
+                    }
+
+                }
+            }
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+    }
+}

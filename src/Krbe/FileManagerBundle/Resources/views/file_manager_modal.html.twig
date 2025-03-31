@@ -1,0 +1,17 @@
+{% if krbeFilemanagerModalExist is not defined %}
+    {% set krbeFilemanagerModalExist = true %}
+    <!-- La modale du file manager, qui va être affichée en mode picker -->
+    <div id="filemanager-modal" style="display: none;">
+        <div class="filemanager-modal-content">
+            <div class="filemanager-modal-header">
+                <h3>Gestionnaire de fichiers</h3>
+                <button type="button" class="filemanager-modal-close">&times;</button>
+            </div>
+            <div class="filemanager-modal-body">
+                <iframe src="{{ path('file_manager_widget', { currentFolder: '', picker: true }) }}" frameborder="0" width="100%" height="100%"></iframe>
+            </div>
+        </div>
+    </div>
+    <link rel="stylesheet" href="{{ asset('bundles/krbefilemanager/css/krbe-filemanager-picker.css') }}">
+    <script src="{{ asset('bundles/krbefilemanager/js/krbe-filemanager-picker.js') }}"></script>
+{% endif %}

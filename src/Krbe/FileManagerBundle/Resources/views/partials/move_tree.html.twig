@@ -1,0 +1,10 @@
+<ul class="move-directory-tree">
+    {% for node in directoryTree %}
+        <li data-path="{{ node.path }}">
+            <a href="#" class="move-select">{{ node.name }}</a>
+            {% if node.children is defined and node.children|length > 0 %}
+                {{ include('@KrbeFileManager/partials/move_tree.html.twig', { directoryTree: node.children }) }}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
