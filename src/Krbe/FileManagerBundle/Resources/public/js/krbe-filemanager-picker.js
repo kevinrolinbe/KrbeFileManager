@@ -64,6 +64,11 @@ document.addEventListener("DOMContentLoaded", function () {
             wrapper.appendChild(previewContainer);
         }
 
+        // Vérifier si l'input a déjà une valeur et mettre à jour la prévisualisation
+        if (input.value && previewContainer) {
+            previewContainer.innerHTML = `<img src="${input.value}" alt="Preview" style="max-width: 100%; max-height: 100%; object-fit: contain;">`;
+        }
+
         // Créer le bouton de sélection
         const selectButton = document.createElement('button');
         selectButton.type = 'button';
