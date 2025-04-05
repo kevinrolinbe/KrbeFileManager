@@ -16,7 +16,7 @@ class DefaultUploadPathResolver implements UploadPathResolverInterface
         private string $kernelProjectDir,
         private array $config
     ) {
-        $this->uploadPath = $this->kernelProjectDir . '/public/cdn/' . $this->config['upload_folder'];
+        $this->uploadPath = $this->kernelProjectDir . '/public/' . ($this->config['upload_folder'] ?? 'uploads');
     }
 
     /**

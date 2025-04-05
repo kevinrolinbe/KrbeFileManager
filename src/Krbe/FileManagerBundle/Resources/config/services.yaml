@@ -60,7 +60,20 @@ services:
       $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
       $translator: '@translator'
 
+  Krbe\FileManagerBundle\Resolver\DefaultQuotaResolver:
+    public: true
+    autowire: true
+    autoconfigure: true
+    arguments:
+      $config: '%krbe_file_manager%'
+
+  Krbe\FileManagerBundle\Resolver\QuotaResolverInterface:
+    alias: Krbe\FileManagerBundle\Resolver\DefaultQuotaResolver
+
   Krbe\FileManagerBundle\Resolver\DefaultUploadPathResolver:
+    public: true
+    autowire: true
+    autoconfigure: true
     arguments:
       $kernelProjectDir: '%kernel.project_dir%'
       $config: '%krbe_file_manager%'

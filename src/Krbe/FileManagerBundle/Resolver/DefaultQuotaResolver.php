@@ -2,8 +2,6 @@
 
 namespace Krbe\FileManagerBundle\Resolver;
 
-use Krbe\FileManagerBundle\Service\FileSystemService;
-
 /**
  * Class DefaultQuotaResolver
  * Implémentation par défaut du resolver de quota.
@@ -12,7 +10,6 @@ class DefaultQuotaResolver implements QuotaResolverInterface
 {
     public function __construct(
         private array $config,
-        private FileSystemService $fileSystemService,
         private UploadPathResolverInterface $uploadPathResolver
     ) {
     }
@@ -31,7 +28,18 @@ class DefaultQuotaResolver implements QuotaResolverInterface
     public function getUsedSpace(): int
     {
         $uploadPath = $this->uploadPathResolver->getUploadPath();
-        return $this->fileSystemService->getDirectorySize($uploadPath);
+        $totalSize = 0;
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($uploadPath, \FilesystemIterator::SKIP_DOTS)
+        );
+        
+        foreach ($iterator as $file) {
+            if ($file->isFile()) {
+                $totalSize += $file->getSize();
+            }
+        }
+        
+        return $totalSize;
     }
 
     /**
