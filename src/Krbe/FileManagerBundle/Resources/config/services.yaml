@@ -52,6 +52,8 @@ services:
       $imageProcessingService: '@Krbe\FileManagerBundle\Service\ImageProcessingService'
       $uploadPathResolver: '@Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface'
       $fileNameHelper: '@Krbe\FileManagerBundle\Helper\FileNameHelper'
+      $translator: '@translator'
+      $config: '%krbe_file_manager%'
 
   # 5. Services utilitaires
   Krbe\FileManagerBundle\Helper\FileNameHelper:

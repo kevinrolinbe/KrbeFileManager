@@ -29,74 +29,84 @@ class FileManagerController extends AbstractController
     * @param ImageProcessingService $imageProcessingService Le service de traitement des images.
     * @param UploadPathResolverInterface $uploadPathResolver Le resolver pour obtenir le chemin d'upload.
     * @param TranslatorInterface $translator Le traducteur pour les messages de traduction.
+    * @param array $config La configuration du contrôleur.
     */
     public function __construct(
         private FileManagerServiceInterface $fileManagerService,
         private ImageProcessingService $imageProcessingService,
         private UploadPathResolverInterface $uploadPathResolver,
         private FileNameHelper $fileNameHelper,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private array $config
     ) {
     }
 
-     #[Route('/delete', name: 'file_manager_delete', methods: ['POST'])]
-     public function delete(Request $request): JsonResponse
-     {
-         $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
-         $data = json_decode($request->getContent(), true);
-         $relativePath = $data['relativePath'] ?? '';
+    private function checkRequiredRole()
+    {
+        if (!empty($this->config['required_role'])) {
+            $this->denyAccessUnlessGranted($this->config['required_role']);
+        }
+    }
+
+    #[Route('/delete', name: 'file_manager_delete', methods: ['POST'])]
+    public function delete(Request $request): JsonResponse
+    {
+        $this->checkRequiredRole();
+
+        $data = json_decode($request->getContent(), true);
+        $relativePath = $data['relativePath'] ?? '';
          
-         $success = $this->fileManagerService->deleteFile($relativePath);
-         return new JsonResponse([
-             'success' => $success,
-             'message' => $success ? $this->translator->trans('krbe_file_manager.ui.success.deleted') : $this->translator->trans('krbe_file_manager.ui.error.delete')
-         ], $success ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
-     }
+        $success = $this->fileManagerService->deleteFile($relativePath);
+        return new JsonResponse([
+            'success' => $success,
+            'message' => $success ? $this->translator->trans('krbe_file_manager.ui.success.deleted') : $this->translator->trans('krbe_file_manager.ui.error.delete')
+        ], $success ? Response::HTTP_OK : Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 
-     #[Route('/rename', name: 'file_manager_rename', methods: ['POST'])]
-     public function rename(Request $request): JsonResponse
-     {
-         $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
+    #[Route('/rename', name: 'file_manager_rename', methods: ['POST'])]
+    public function rename(Request $request): JsonResponse
+    {
+        $this->checkRequiredRole();
 
-         try {
-             $data = json_decode($request->getContent(), true);
-             if (!isset($data['relativePath']) || !isset($data['newName'])) {
-                 return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.errors.empty_filename')], Response::HTTP_BAD_REQUEST);
-             }
+        try {
+            $data = json_decode($request->getContent(), true);
+            if (!isset($data['relativePath']) || !isset($data['newName'])) {
+                return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.errors.empty_filename')], Response::HTTP_BAD_REQUEST);
+            }
 
-             $newFilePath = $this->fileManagerService->renameFile(
-                 $data['relativePath'],
-                 $data['newName']
-             );
+            $newFilePath = $this->fileManagerService->renameFile(
+                $data['relativePath'],
+                $data['newName']
+            );
 
-             return new JsonResponse(['newPath' => $newFilePath]);
-         } catch (\Exception $e) {
-             return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.ui.error.rename')], Response::HTTP_BAD_REQUEST);
-         }
-     }
+            return new JsonResponse(['newPath' => $newFilePath]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.ui.error.rename')], Response::HTTP_BAD_REQUEST);
+        }
+    }
 
-     #[Route(path: '/move', name: 'file_manager_move', methods: ['POST'])]
-     public function move(Request $request): JsonResponse
-     {
-         $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
+    #[Route(path: '/move', name: 'file_manager_move', methods: ['POST'])]
+    public function move(Request $request): JsonResponse
+    {
+        $this->checkRequiredRole();
 
-         $data = json_decode($request->getContent(), true);
-         $relativePath = $data['relativePath'] ?? '';
-         $destinationSubFolder = $data['destinationSubFolder'] ?? '';
+        $data = json_decode($request->getContent(), true);
+        $relativePath = $data['relativePath'] ?? '';
+        $destinationSubFolder = $data['destinationSubFolder'] ?? '';
 
-         try {
-             // On passe le chemin relatif et le sous-dossier de destination à la méthode moveFile du FileManagerService
-             $newRelativePath = $this->fileManagerService->moveFile($relativePath, $destinationSubFolder);
-             return new JsonResponse(['newFilePath' => $newRelativePath], Response::HTTP_OK);
-         } catch (\Exception $e) {
-             return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.ui.error.move', ['error' => $e->getMessage()])], Response::HTTP_INTERNAL_SERVER_ERROR);
-         }
-     }
+        try {
+            // On passe le chemin relatif et le sous-dossier de destination à la méthode moveFile du FileManagerService
+            $newRelativePath = $this->fileManagerService->moveFile($relativePath, $destinationSubFolder);
+            return new JsonResponse(['newFilePath' => $newRelativePath], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $this->translator->trans('krbe_file_manager.ui.error.move', ['error' => $e->getMessage()])], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     #[Route('/create-folder', name: 'file_manager_create_folder', methods: ['POST'])]
     public function createFolder(Request $request): JsonResponse
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
+        $this->checkRequiredRole();
 
         $data = json_decode($request->getContent(), true);
         $folderName = $data['folderName'] ?? null;
@@ -127,7 +137,7 @@ class FileManagerController extends AbstractController
      #[Route(path: '/upload', name: 'file_manager_upload', methods: ['POST'])]
      public function upload(Request $request): JsonResponse
      {
-         $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
+        $this->checkRequiredRole();
 
          $subFolder = $request->request->get('subFolder', '');
          $file = $request->files->get('file');
@@ -167,7 +177,7 @@ class FileManagerController extends AbstractController
     #[Route(path: '/crop', name: 'file_manager_crop', methods: ['POST'])]
     public function crop(Request $request): JsonResponse
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_WRITE');
+        $this->checkRequiredRole();
 
         // Récupération des paramètres de crop
         $relativeFilePath = $request->request->get('relativeFilePath');
@@ -227,7 +237,7 @@ class FileManagerController extends AbstractController
     #[Route('/widget', name: 'file_manager_widget')]
     public function widget(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_READ');
+        $this->checkRequiredRole();
 
         // Vous pouvez définir ici des valeurs par défaut
         $currentFolder = $request->query->get('currentFolder', '');
@@ -245,7 +255,7 @@ class FileManagerController extends AbstractController
     #[Route('/widget/listfolders', name: 'file_manager_widget_listfolders')]
     public function widgetListfolders(Request $request, ?string $subFolder = ''): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_READ');
+        $this->checkRequiredRole();
 
         // Vous pouvez définir ici des valeurs par défaut
         $currentFolder = $request->query->get('currentFolder', '');
@@ -267,7 +277,7 @@ class FileManagerController extends AbstractController
     #[Route('/widget/listfiles/{subFolder?}', name: 'file_manager_widget_listfiles', requirements: ['subFolder' => '.*'])]
     public function widgetListfiles(Request $request, ?string $subFolder = ''): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_READ');
+        $this->checkRequiredRole();
 
         $files = $this->fileManagerService->listFiles($subFolder);
 
@@ -288,7 +298,7 @@ class FileManagerController extends AbstractController
     #[Route('/widgetmodal', name: 'file_manager_widget_modal')]
     public function widgetModal(Request $request): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_FILE_READ');
+        $this->checkRequiredRole();
 
         $currentFolder = $request->query->get('currentFolder', '');
 
@@ -307,7 +317,7 @@ class FileManagerController extends AbstractController
      #[Route('/', name: 'file_manager_index')]
      public function index(Request $request, ?string $subFolder = ''): Response
      {
-         $this->denyAccessUnlessGranted('ROLE_FILE_READ');
+        $this->checkRequiredRole();
 
          $currentFolder = $request->query->get('currentFolder', '');
 

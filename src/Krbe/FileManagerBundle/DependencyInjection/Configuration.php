@@ -14,6 +14,10 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('required_role')
+                    ->defaultValue('ROLE_FILEMANAGER')
+                    ->info('%krbe_file_manager.config.required_role%')
+                ->end()
                 ->integerNode('max_file_size')
                     ->defaultValue(10 * 1024 * 1024) // 10MB
                     ->min(1)
