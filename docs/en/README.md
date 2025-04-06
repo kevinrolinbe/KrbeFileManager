@@ -54,6 +54,7 @@ return [
 
 ```yaml
 krbe_file_manager:
+    required_role: 'ROLE_FILEMANAGER' # empty to disable role checking
     quota_max: -1  # -1 for unlimited, otherwise in bytes
     max_file_size: 10485760  # 10MB
     allowed_mime_types:
