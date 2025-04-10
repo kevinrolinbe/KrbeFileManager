@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'file_manager.title'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('bundles/krbefilemanager/css/filemanager.css') }}">
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        body.tinymce-filemanager {
+            display: flex;
+            flex-direction: column;
+        }
+        iframe {
+            flex: 1;
+            border: none;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body class="tinymce-filemanager">
+    <iframe src="{{ path('file_manager_widget', { currentFolder: '', picker: true }) }}" frameborder="0"></iframe>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Écouter les messages du filemanager
+            window.addEventListener('message', function(event) {
+                if (event.data && event.data.type === 'filemanager:select') {
+                    const filePath = event.data.publicPath;
+                    const fileName = event.data.filePath.split('/').pop();
+                    
+                    // Envoyer un message à TinyMCE
+                    if (window.parent && window.parent.tinymce) {
+                        const editor = window.parent.tinymce.activeEditor;
+                        
+                        // Vérifier si c'est une image
+                        const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName);
+                        
+                        // Envoyer le message à TinyMCE avec le type de fichier
+                        window.parent.postMessage({
+                            mceAction: 'insertImage',
+                            content: filePath,
+                            text: fileName,
+                            isImage: isImage
+                        }, '*');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
