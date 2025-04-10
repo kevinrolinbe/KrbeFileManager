@@ -35,11 +35,20 @@
                     const filePath = event.data.publicPath;
                     const fileName = event.data.filePath.split('/').pop();
                     
-                    // Envoi de l'URL de l'image à l'éditeur parent
+                    // Envoyer un message à TinyMCE
                     if (window.parent && window.parent.tinymce) {
                         const editor = window.parent.tinymce.activeEditor;
-                        editor.insertContent(`<img src="${filePath}" alt="${fileName}">`);
-                        window.parent.tinymce.activeEditor.windowManager.close();
+                        
+                        // Vérifier si c'est une image
+                        const isImage = /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(fileName);
+                        
+                        // Envoyer le message à TinyMCE avec le type de fichier
+                        window.parent.postMessage({
+                            mceAction: 'insertImage',
+                            content: filePath,
+                            text: fileName,
+                            isImage: isImage
+                        }, '*');
                     }
                 }
             });
