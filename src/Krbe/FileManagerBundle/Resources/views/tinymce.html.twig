@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ 'file_manager.title'|trans }}</title>
+    <link rel="stylesheet" href="{{ asset('bundles/krbefilemanager/css/filemanager.css') }}">
+</head>
+<body class="tinymce-filemanager">
+    <div class="filemanager-container">
+        <div class="sidebar">
+            <div class="folders-list">
+                {{ render(controller('Krbe\\FileManagerBundle\\Controller\\FileManagerController::widgetListfolders', { 'subFolder': subFolder })) }}
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="files-list">
+                {{ render(controller('Krbe\\FileManagerBundle\\Controller\\FileManagerController::widgetListfiles', { 'subFolder': subFolder })) }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestionnaire de clic sur les images
+            const fileItems = document.querySelectorAll('.file-item');
+            fileItems.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    const filePath = this.dataset.public;
+                    const fileName = this.dataset.name;
+
+                    console.log(filePath);
+                    
+                    // Envoi de l'URL de l'image à l'éditeur parent
+                    if (window.parent && window.parent.tinymce) {
+                        const editor = window.parent.tinymce.activeEditor;
+                        editor.insertContent(`<img src="${filePath}" alt="${fileName}">`);
+                        window.parent.tinymce.activeEditor.windowManager.close();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

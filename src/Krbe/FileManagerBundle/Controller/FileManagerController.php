@@ -349,4 +349,15 @@ class FileManagerController extends AbstractController
         return basename($parentPath);
     }
 
+    #[Route('/tinymce', name: 'file_manager_tinymce')]
+    public function tinymce(Request $request): Response
+    {
+        $this->checkRequiredRole();
+        
+        return $this->render('@KrbeFileManager/tinymce.html.twig', [
+            'config' => $this->config,
+            'subFolder' => $request->query->get('subFolder', ''),
+        ]);
+    }
+
 }
