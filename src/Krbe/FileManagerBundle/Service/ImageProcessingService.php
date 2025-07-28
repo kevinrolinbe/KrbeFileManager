@@ -158,6 +158,18 @@ class ImageProcessingService
             }
         }
 
+        // si la version optimisée est plus grande, on supprime la version optimisée et on conserve l'original sans la mention _original
+        if (
+            $options['keep_original'] &&
+            $options['compression_enabled'] &&
+            file_exists($originalPath) &&
+            filesize($originalPath) <= filesize($outputPath)
+        ) {
+            unlink($outputPath);
+            rename($originalPath, $outputPath);
+            $result['original'] = $outputPath;
+        }
+
         return $result;
     }
 
