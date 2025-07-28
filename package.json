@@ -1,0 +1,34 @@
+{
+  "name": "krbefilemanager",
+  "version": "1.0.0",
+  "description": "[English](../en/README.md) | [Français](../fr/README.md)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinrolinbe/KrbeFileManager.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kevinrolinbe/KrbeFileManager/issues"
+  },
+  "homepage": "https://github.com/kevinrolinbe/KrbeFileManager#readme",
+  "devDependencies": {
+    "gulp": "^5.0.1",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-order": "^1.2.0",
+    "gulp-rename": "^2.1.0",
+    "gulp-sass": "^6.0.1",
+    "gulp-sourcemaps": "^3.0.0",
+    "gulp-uglify": "^3.0.2",
+    "sass": "^1.89.2"
+  }
+}

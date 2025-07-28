@@ -16,6 +16,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 filesListContainer.innerHTML = html;
 
                 updateNavigationCurrent(subFolder);
+
+                const searchField = document.getElementById('search');
+                if (searchField) {
+                    searchField.dispatchEvent(new Event('keyup', { bubbles: true }));
+                }
+
             })
             .catch(error => console.error("Erreur de chargement de la liste de fichiers :", error));
     }
