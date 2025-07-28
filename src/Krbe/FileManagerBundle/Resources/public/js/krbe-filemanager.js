@@ -337,8 +337,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else if (button.classList.contains('rename-btn')) {
             console.log("Renommer cliqué pour :", relativePath);
-            const newName = prompt(translations.enter_new_name, currentName);
+            // Récupérer l'extension du fichier courant
+            const lastDot = relativePath.lastIndexOf('.');
+            let extension = '';
+            if (lastDot > 0) {
+                extension = relativePath.substring(lastDot);
+            }
+            console.log("Extension trouvée :", extension);
+            let newName = prompt(translations.enter_new_name, currentName);
             if (newName && newName !== currentName) {
+                // On la rajoute l'extention si elle n'est pas déjà présente
+                if (extension && !newName.endsWith(extension)) {
+                    newName += extension;
+                }
+                console.log("Renommer en :", newName);
+
                 fetch(krbeFilemanagerUrlFctRename, {
                     method: 'POST',
                     headers: {
@@ -501,3 +514,4 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
