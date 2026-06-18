@@ -5,8 +5,7 @@ namespace Krbe\FileManagerBundle\Helper;
 use Krbe\FileManagerBundle\Exception\FileManagerException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface;
-use Symfony\Bundle\FrameworkBundle\Translation\Translator;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Classe FileNameHelper
@@ -17,7 +16,7 @@ class FileNameHelper
     public function __construct(
         private UploadPathResolverInterface $uploadPathResolver,
         private array $config,
-        private Translator|DataCollectorTranslator $translator
+        private TranslatorInterface $translator
     ) {}
 
     /**

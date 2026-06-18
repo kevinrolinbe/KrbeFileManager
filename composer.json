@@ -17,8 +17,8 @@
     "psr-4": { "Krbe\\FileManagerBundle\\": "src/Krbe/FileManagerBundle/" }
   },
   "require": {
-    "php": ">=8.1",
-    "symfony/framework-bundle": "^7.0",
+    "php": ">=8.2",
+    "symfony/framework-bundle": "^7.0|^8.0",
     "aws/aws-sdk-php": "^3.0"
   }
 }

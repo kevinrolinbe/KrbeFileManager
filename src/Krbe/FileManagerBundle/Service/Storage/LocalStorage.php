@@ -147,7 +147,7 @@ class LocalStorage implements StorageInterface
         $tempFile = new UploadedFile(
             $currentPath,
             $newName,
-            mime_content_type($currentPath),
+            (new \finfo(FILEINFO_MIME_TYPE))->file($currentPath),
             null,
             true
         );
