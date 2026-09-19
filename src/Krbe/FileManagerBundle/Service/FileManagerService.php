@@ -11,6 +11,12 @@ use Krbe\FileManagerBundle\Exception\FileManagerException;
 
 class FileManagerService implements FileManagerServiceInterface
 {
+    /** Extensions interprétées par un serveur web, refusées quelle que soit la configuration */
+    private const FORBIDDEN_EXTENSIONS = [
+        'php', 'php3', 'php4', 'php5', 'php7', 'php8', 'phtml', 'pht', 'phps', 'phar',
+        'htaccess', 'htpasswd', 'cgi', 'pl', 'py', 'sh', 'asp', 'aspx', 'jsp',
+    ];
+
     public function __construct(
         private StorageInterface $storageService,
         private UploadPathResolverInterface $uploadPathResolver,
@@ -253,11 +259,16 @@ class FileManagerService implements FileManagerServiceInterface
             );
         }
 
-        // Vérification de l'extension : le nom d'origine est conservé à l'enregistrement,
-        // l'extension doit donc correspondre au type MIME détecté (bloque ex: note.php détecté en text/plain)
+        // Vérification de l'extension : le nom d'origine est conservé à l'enregistrement.
+        // L'extension doit appartenir à l'un des types MIME autorisés (et non forcément au type détecté :
+        // un .csv ou un .xml sans en-tête est détecté en text/plain), et ne jamais être exécutable.
+        // Bloque par ex. note.php détecté en text/plain ou photo.php détecté en image/jpeg.
+        // Un fichier sans extension reste accepté : il ne peut pas être exécuté par le serveur web.
         $extension = strtolower($file->getClientOriginalExtension());
-        $allowedExtensions = MimeTypes::getDefault()->getExtensions((string) $file->getMimeType());
-        if ($extension === '' || !in_array($extension, $allowedExtensions, true)) {
+        if ($extension !== '' && (
+            in_array($extension, self::FORBIDDEN_EXTENSIONS, true)
+            || !in_array($extension, $this->getAllowedExtensions(), true)
+        )) {
             throw FileManagerException::createFromCode(
                 FileManagerException::ERROR_INVALID_MIME_TYPE,
                 implode(', ', $this->config['allowed_mime_types'])
@@ -271,6 +282,22 @@ class FileManagerService implements FileManagerServiceInterface
                 $file->getErrorMessage()
             );
         }
+    }
+
+    /**
+     * Extensions correspondant aux types MIME autorisés par la configuration.
+     *
+     * @return list<string>
+     */
+    private function getAllowedExtensions(): array
+    {
+        $mimeTypes = MimeTypes::getDefault();
+        $extensions = [];
+        foreach ($this->config['allowed_mime_types'] as $mimeType) {
+            array_push($extensions, ...$mimeTypes->getExtensions($mimeType));
+        }
+
+        return array_values(array_unique($extensions));
     }
 
     private function isValidPath(string $path): bool
