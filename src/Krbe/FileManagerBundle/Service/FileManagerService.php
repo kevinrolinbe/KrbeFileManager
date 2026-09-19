@@ -6,6 +6,7 @@ use Krbe\FileManagerBundle\Resolver\UploadPathResolverInterface;
 use Krbe\FileManagerBundle\Resolver\QuotaResolverInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\Mime\MimeTypes;
 use Krbe\FileManagerBundle\Exception\FileManagerException;
 
 class FileManagerService implements FileManagerServiceInterface
@@ -108,6 +109,17 @@ class FileManagerService implements FileManagerServiceInterface
             throw FileManagerException::createFromCode(
                 FileManagerException::ERROR_PERMISSION_DENIED,
                 'Pas de permission de modification pour ce fichier'
+            );
+        }
+
+        // L'extension d'un fichier ne peut pas être modifiée (ex: photo.jpg -> photo.php)
+        $fullPath = $this->uploadPathResolver->getUploadPath() . '/' . ltrim($relativePath, '/');
+        if (is_file($fullPath)
+            && strtolower(pathinfo($newName, PATHINFO_EXTENSION)) !== strtolower(pathinfo($fullPath, PATHINFO_EXTENSION))
+        ) {
+            throw FileManagerException::createFromCode(
+                FileManagerException::ERROR_RENAME_FAILED,
+                'L\'extension du fichier ne peut pas être modifiée'
             );
         }
 
@@ -235,6 +247,17 @@ class FileManagerService implements FileManagerServiceInterface
 
         // Vérification du type MIME
         if (!in_array($file->getMimeType(), $this->config['allowed_mime_types'])) {
+            throw FileManagerException::createFromCode(
+                FileManagerException::ERROR_INVALID_MIME_TYPE,
+                implode(', ', $this->config['allowed_mime_types'])
+            );
+        }
+
+        // Vérification de l'extension : le nom d'origine est conservé à l'enregistrement,
+        // l'extension doit donc correspondre au type MIME détecté (bloque ex: note.php détecté en text/plain)
+        $extension = strtolower($file->getClientOriginalExtension());
+        $allowedExtensions = MimeTypes::getDefault()->getExtensions((string) $file->getMimeType());
+        if ($extension === '' || !in_array($extension, $allowedExtensions, true)) {
             throw FileManagerException::createFromCode(
                 FileManagerException::ERROR_INVALID_MIME_TYPE,
                 implode(', ', $this->config['allowed_mime_types'])
